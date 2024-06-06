@@ -40,9 +40,10 @@ def default():
     images_array = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg', '5.jpeg']
     data = request.get_json()
     path = os.path.dirname(os.path.abspath(__file__))
+    image_selected = path + "/images/"+images_array[random.randint(0, 4)]
     images = imgcrop(
         path + "/images/"+images_array[random.randint(0, 4)], int(f'{data[0]}'), int(f'{data[1]}'))
-    return path
+    return image_selected
 
 
 if __name__ == '__main__':
