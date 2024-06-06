@@ -1,11 +1,13 @@
 import os
 import time
-from flask import Flask, jsonify, request, render_template, send_from_directory
+from flask import Flask, jsonify, request, render_template, send_from_directory, url_for
 from functions.crop import imgcrop, imgcropurl
 from config import config
 import requests
 from os import remove
 import random
+from PIL import Image
+import io
 
 app = Flask(__name__)
 
@@ -37,11 +39,16 @@ def create_user():
 
 @app.route('/split-images-example', methods=['GET'])
 def default():
+    data = request.get_json()
+    data_row = data['row']
+    data_col = data['col']
+
     images_array = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg', '5.jpeg']
     image_selected = images_array[random.randint(0, 4)]
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'images')
-    return send_from_directory(path, image_selected)
+    image_url = url_for('static', filename=f'images/{image_selected}')  # Construir la URL de la imagen
 
+    return jsonify({"image_url": image_url})
 
 if __name__ == '__main__':
     app.config.from_object(config['development'])

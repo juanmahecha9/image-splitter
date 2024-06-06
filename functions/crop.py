@@ -42,28 +42,23 @@ def imgcropurl(url, xPieces, yPieces):
         }
     
 
-def imgcrop(input, xPieces, yPieces):
+def imgcrop(input_image, xPieces, yPieces):
     try:
         array = []
-        im_ = Image.open(input)
-        resize_ = (500, 500)
-        im = im_.resize(resize_)
+        im = input_image.resize((500, 500))
         imgwidth, imgheight = im.size
         height = imgheight // yPieces
         width = imgwidth // xPieces
         for i in range(0, yPieces):
             for j in range(0, xPieces):
-                box = (j * width, i * height, (j + 1)
-                       * width, (i + 1) * height)
+                box = (j * width, i * height, (j + 1) * width, (i + 1) * height)
                 a = im.crop(box)
-                a.save("img.jpg")
-                b64im = image_to_base64("img.jpg")
+                buffered = io.BytesIO()
+                a.save(buffered, format="JPEG")
+                b64im = base64.b64encode(buffered.getvalue())
                 string_b64_img = b64im.decode('UTF-8')
-                # print(type(string_b64_img))
-                array.append({"url": "data:image/jpg;base64," +
-                              string_b64_img, "id": [i, j]})
-                time.sleep(.2)
-                remove("img.jpg")
+                array.append({"url": "data:image/jpeg;base64," + string_b64_img, "id": [i, j]})
+                time.sleep(0.2)  # Considera si realmente necesitas esta pausa
         return array
     except Exception as e:
         tb_str = traceback.format_exc()
@@ -72,8 +67,7 @@ def imgcrop(input, xPieces, yPieces):
             'message': f"Error message: {str(e)}",
             "Traceback details": tb_str
         }
-
-
+    
 def image_to_base64(image):
     buffered = io.BytesIO()
     image.save(buffered, format="JPEG")
