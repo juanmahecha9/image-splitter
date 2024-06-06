@@ -20,7 +20,7 @@ def after_request(response):
     return response
 
 
-@app.route('/home', methods=['GET'])
+@app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
 
@@ -28,19 +28,7 @@ def index():
 @app.route('/api/slicer/image', methods=['POST'])
 def create_user():
     data = request.get_json()
-    # Descarga de la imagen temporalmente
-    if (os.path.exists('url_file.jpg')):
-        remove("url_file.jpg")
-    if (os.path.exists('img.jpg')):
-        remove("img.jpg")
-    time.sleep(0.001)
-    with open('url_file.jpg', 'wb') as file:
-        file.write(requests.get(data["url"]).content)
-    time.sleep(0.01)
-    images = imgcrop("./url_file.jpg", int(data["row"]), int(data["col"]))
-    time.sleep(.01)
-    remove("url_file.jpg")
-    return jsonify(images)
+    return data
 
 
 @app.route('/api/split-images', methods=['GET'])
