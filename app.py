@@ -35,14 +35,14 @@ def create_user():
     return imgcropurl(data_url,data_row, data_col)
 
 
-@app.route('/api/split-images', methods=['GET'])
+@app.route('/split-images-example', methods=['GET'])
 def default():
     images_array = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg', '5.jpeg']
     data = request.get_json()
     path = os.path.dirname(os.path.abspath(__file__))
     images = imgcrop(
         path + "/images/"+images_array[random.randint(0, 4)], int(f'{data[0]}'), int(f'{data[1]}'))
-    return images
+    return path
 
 
 if __name__ == '__main__':
