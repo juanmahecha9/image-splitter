@@ -1,7 +1,7 @@
 import os
 import time
 from flask import Flask, jsonify, request, render_template
-from functions.crop import imgcrop
+from functions.crop import imgcrop, imgcropurl
 from config import config
 import requests
 from os import remove
@@ -25,10 +25,14 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/api/slicer/image', methods=['POST'])
+@app.route('/split-url', methods=['POST'])
 def create_user():
     data = request.get_json()
-    return data
+ 
+    data_url = (data['url'])
+    data_row = (data['row'])
+    data_col = (data['col'])
+    return imgcropurl(data_url,data_row, data_col)
 
 
 @app.route('/api/split-images', methods=['GET'])
