@@ -9,7 +9,7 @@ import random
 from PIL import Image
 import io
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 
 @app.after_request
@@ -43,12 +43,27 @@ def default():
     data_row = data['row']
     data_col = data['col']
 
-    images_array = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg', '5.jpeg']
-    image_selected = images_array[random.randint(0, 4)]
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'images')
-    image_url = url_for('static', filename=f'images/{image_selected}')  # Construir la URL de la imagen
+    try:
+        images_array = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg', '5.jpeg']
+        image_selected = images_array[random.randint(0, 4)]
 
-    return jsonify({"image_url": image_url})
+        # Ruta completa para la imagen seleccionada
+        image_path = os.path.join(app.root_path, 'images', image_selected)
+
+        # Abrir la imagen seleccionada con PIL
+        input_image = Image.open(image_path)
+
+        # Aplicar la función imgcrop() a la imagen
+        cropped_images = imgcrop(input_image, data_row, data_col)  # Especifica el número deseado de divisiones en x y y
+
+        return jsonify(cropped_images)
+    except Exception as e:
+        tb_str = traceback.format_exc()
+        return {
+            'error': f"Error type: {type(e).__name__}",
+            'message': f"Error message: {str(e)}",
+            "Traceback details": tb_str
+        }
 
 if __name__ == '__main__':
     app.config.from_object(config['development'])
