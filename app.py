@@ -20,7 +20,7 @@ def after_request(response):
     return response
 
 
-@app.route('/', methods=['GET'])
+@app.route('/home', methods=['GET'])
 def index():
     return render_template('index.html')
 
