@@ -1,6 +1,6 @@
 import os
 import time
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, send_from_directory
 from functions.crop import imgcrop, imgcropurl
 from config import config
 import requests
@@ -38,12 +38,9 @@ def create_user():
 @app.route('/split-images-example', methods=['GET'])
 def default():
     images_array = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg', '5.jpeg']
-    data = request.get_json()
-    path = os.path.dirname(os.path.abspath(__file__))
-    image_selected = path + "/images/"+images_array[random.randint(0, 4)]
-    images = imgcrop(
-        path + "/images/"+images_array[random.randint(0, 4)], int(f'{data[0]}'), int(f'{data[1]}'))
-    return image_selected
+    image_selected = images_array[random.randint(0, 4)]
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'images')
+    return send_from_directory(path, image_selected)
 
 
 if __name__ == '__main__':
